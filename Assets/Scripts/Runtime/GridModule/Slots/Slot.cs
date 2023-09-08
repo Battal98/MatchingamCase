@@ -1,3 +1,5 @@
+using Runtime.GridModule.Abstraction;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum SlotState
@@ -6,28 +8,51 @@ public enum SlotState
     Full,
 }
 
-public class Slot : MonoBehaviour
+public enum CharacterColor
+{
+    Blue,
+    Green,
+    Red,
+}
+
+public class Slot : MonoBehaviour, ISlotObject
 {
     [SerializeField]
     private SlotState slotState;
 
     [SerializeField]
-    private Transform weaponTarget;
+    private CharacterColor characterColor;
 
-    public SlotState GetSloteState()
+    [SerializeField]
+    private List<GameObject> characters = new List<GameObject>();
+
+    private void Awake()
     {
-        return slotState;
+        SetCharacters();
+    }
+
+    private void SetCharacters()
+    {
+        characters.CloseAllListElements();
+
+        if (slotState == SlotState.Full)
+        {
+            characters[(int)characterColor].SetActive(true);
+        }
     }
 
     public void SnapObject(GameObject obj)
     {
-        obj.transform.SetParent(weaponTarget);
-        obj.transform.localPosition = Vector3.zero;
         slotState = SlotState.Full;
     }
 
     public void Reset()
     {
         slotState = SlotState.Empty;
+    }
+
+    public SlotState GetSlotState()
+    {
+        return slotState;
     }
 }

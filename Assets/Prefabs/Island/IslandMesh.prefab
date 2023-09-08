@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 84881158051794996}
+  - component: {fileID: 84881158051794992}
   - component: {fileID: 84881158051794997}
   - component: {fileID: 84881158051794994}
   - component: {fileID: 84881158051794995}
-  - component: {fileID: 84881158051794992}
   m_Layer: 0
   m_Name: IslandMesh
   m_TagString: Island
@@ -33,9 +33,40 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 84881158876894211}
+  - {fileID: 2010831350589062586}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &84881158051794992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84881158051794993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f477fbb79e07d04285cf114e383e1c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridType: 0
+  gridSurface: 0
+  gridSize: {x: 0, y: 0}
+  gridOffsets: {x: 0, y: 0}
+  directions: {x: 1, y: 1}
+  isRotateObject: 0
+  gridCount: 0
+  radius: 0
+  heightCount: 0
+  height: 0
+  gridObject: {fileID: 0}
+  gridPivotTarget: {fileID: 2010831350589062586}
+  gridObjectsHolder: {fileID: 2010831350589062586}
+  pathTargets:
+  - {fileID: 8568864403626501238}
+  - {fileID: 84881159137926380}
+  targetObject: {fileID: 84881158876894223}
+  isFirstObject: 0
 --- !u!33 &84881158051794997
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -99,23 +130,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &84881158051794992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 84881158051794993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f477fbb79e07d04285cf114e383e1c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathTargets:
-  - {fileID: 8568864403626501238}
-  - {fileID: 84881159137926380}
-  targetObject: {fileID: 84881158876894223}
-  isFirstObject: 0
 --- !u!1 &84881158876894223
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,6 +259,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 84881158876894211}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &150613124971921646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2010831350589062586}
+  m_Layer: 0
+  m_Name: gridObjectHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2010831350589062586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150613124971921646}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 84881158051794996}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2386213705886138900
 GameObject:

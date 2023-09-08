@@ -14,7 +14,7 @@ public class CreatePath : MonoBehaviour
     [SerializeField]
     private GameObject cubePrefab;
 
-    private ClickableObject firstSelectedObject;
+    private IslandController firstSelectedObject;
 
     private List<Vector3> pathPositions = new List<Vector3>();
     private List<Vector3> objectInitialPositions = new List<Vector3>();
@@ -23,7 +23,7 @@ public class CreatePath : MonoBehaviour
     private List<GameObject> _createdPathList = new List<GameObject>();
 
     [SerializeField]
-    private List<ClickableObject> _clickedObjectList = new List<ClickableObject>();
+    private List<IslandController> _clickedObjectList = new List<IslandController>();
 
     private void Update()
     {
@@ -36,7 +36,7 @@ public class CreatePath : MonoBehaviour
             {
                 ClearPathMeshes();
 
-                ClickableObject clickedObject = hit.collider.GetComponent<ClickableObject>();
+                IslandController clickedObject = hit.collider.GetComponent<IslandController>();
 
                 _clickedObjectList.Add(clickedObject);
 

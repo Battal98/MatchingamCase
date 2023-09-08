@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using Runtime.GridModule.Abstraction;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,39 +21,50 @@ public class GridManager : MonoBehaviour
     #region Serializable Variables
 
     #region Rectangular Variables
-
+    [BoxGroup(TAG)]
     [SerializeField] private GridType gridType;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Rect)]
     [SerializeField] private GridSurface gridSurface;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Rect)]
     [SerializeField] private Vector2 gridSize;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Rect)]
     [SerializeField] private Vector2 gridOffsets;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Rect)]
-    [SerializeField] private int direction;
+    [SerializeField] private Vector2 directions;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Rect)]
     [SerializeField] private bool isRotateObject;
 
     #endregion
 
     #region Circular Variables
-
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Circ)]
-    [SerializeField] int gridCount; // Grid sayýsý
+    [SerializeField] int gridCount;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Circ)]
-    [SerializeField] float radius; // Dairenin yarýçapý
+    [SerializeField] float radius;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Circ)]
-    [SerializeField] int heightCount; // Yükseklik sayýsý
+    [SerializeField] int heightCount;
+    [BoxGroup(TAG)]
     [ShowIf("gridType", GridType.Circ)]
-    [SerializeField] float height; // Gridlerin yüksekliði 
+    [SerializeField] float height;
 
     #endregion
 
     #region Common Variables
-
+    [BoxGroup(TAG)]
     [SerializeField] private GameObject gridObject;
+    [BoxGroup(TAG)]
     [SerializeField] private Transform gridPivotTarget;
-
+    [BoxGroup(TAG)]
+    [SerializeField] private Transform gridObjectsHolder;
+    [Space]
     #endregion 
 
     #endregion
@@ -63,8 +75,11 @@ public class GridManager : MonoBehaviour
     private const int XZRot = 90;
     private const int YZRot = 90;
 
+    private const string TAG = "GRID";
+
     #endregion
 
+    [BoxGroup(TAG)]
     [SerializeField]
     private List<Slot> slotList = new List<Slot>();
 
@@ -79,17 +94,30 @@ public class GridManager : MonoBehaviour
     {
         if (isSub)
         {
-           
         }
         else
         {
-            
         }
     }
 
     private void OnDisable()
     {
         SubscribeEvents(false);
+    }
+
+    public float GetGridIndex()
+    {
+        return gridSize.x;
+    }
+
+    public int GetGridSize()
+    {
+        return (int) gridSize.x * (int) gridSize.y;
+    }
+
+    public List<Slot> GetISlotList()
+    {
+        return slotList;
     }
 
     #endregion
@@ -117,7 +145,7 @@ public class GridManager : MonoBehaviour
     {
         var obj = Instantiate(gridObject);
         var objComponent = obj.GetComponent<Slot>();
-        obj.transform.SetParent(this.transform);
+        obj.transform.SetParent(gridObjectsHolder);
         obj.transform.position = position;
         obj.transform.rotation = rotation;
         slotList.Add(objComponent);
@@ -143,7 +171,7 @@ public class GridManager : MonoBehaviour
             {
                 float y = height * j + heightStep * 0.5f;
                 // Grid'i oluþtur ve pozisyonunu ayarla
-                GameObject grid = Instantiate(gridObject, transform);
+                GameObject grid = Instantiate(gridObject, gridObjectsHolder);
                 var gridComponent = grid.GetComponent<Slot>();
                 slotList.Add(gridComponent);
                 grid.transform.position = new Vector3(x, y, z);
@@ -180,17 +208,17 @@ public class GridManager : MonoBehaviour
             switch (gridSurface)
             {
                 case GridSurface.XY:
-                    position = CalculatePosition(gridPivotTarget.position, direction * modX, modY, 0);
+                    position = CalculatePosition(gridPivotTarget.position, directions.x * modX, directions.y * modY, 0);
                     rotation = Quaternion.Euler(0, 0, XYRot);
                     break;
 
                 case GridSurface.XZ:
-                    position = CalculatePosition(gridPivotTarget.position, direction * modX, 0 + 0.02f, modY);
+                    position = CalculatePosition(gridPivotTarget.position, directions.x * modX, 0 + 0.02f, directions.y * modY);
                     rotation = Quaternion.Euler(XZRot, 0, 0);
                     break;
 
                 case GridSurface.YZ:
-                    position = CalculatePosition(gridPivotTarget.position, 0, direction * modX, modY);
+                    position = CalculatePosition(gridPivotTarget.position, 0, directions.x * modX, directions.y * modY);
                     rotation = Quaternion.Euler(0, YZRot, 0);
                     break;
 
@@ -236,10 +264,10 @@ public class GridManager : MonoBehaviour
     [Button]
     private void ClearAllGrid()
     {
-        while (transform.childCount > 0)
+        while (gridObjectsHolder.childCount > 0)
         {
-            GameObject grid = transform.GetChild(0).gameObject;
-            DestroyImmediate(grid);
+            GameObject gridObject = gridObjectsHolder.GetChild(0).gameObject;
+            DestroyImmediate(gridObject);
         }
         slotList.Clear();
         slotList.TrimExcess();
