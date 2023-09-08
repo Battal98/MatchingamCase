@@ -30,6 +30,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Vector2 gridOffsets;
     [ShowIf("gridType", GridType.Rect)]
     [SerializeField] private int direction;
+    [ShowIf("gridType", GridType.Rect)]
+    [SerializeField] private bool isRotateObject;
 
     #endregion
 
@@ -194,6 +196,11 @@ public class GridManager : MonoBehaviour
 
                 default:
                     throw new ArgumentException("Invalid grid surface.");
+            }
+
+            if (!isRotateObject)
+            {
+                rotation = Quaternion.identity;
             }
 
             CreateAndSetupGridObject(position, rotation);
