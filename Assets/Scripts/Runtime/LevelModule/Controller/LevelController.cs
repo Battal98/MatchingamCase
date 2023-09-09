@@ -1,7 +1,8 @@
-﻿using NaughtyAttributes;
-using Runtime.LevelModule.Signals;
+﻿using Runtime.LevelModule.Signals;
 using Runtime.Test;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
+using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.LevelModule.Controller
@@ -25,23 +26,17 @@ namespace Runtime.LevelModule.Controller
         [SerializeField]
         private List<TestPositionHandler> positionHandlerObjects = new List<TestPositionHandler>();
 
-        private void Start()
-        {
-            //CreatePositionHolderObject();
-        }
-
         private void OnEnable()
         {
-            LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHHandlerObject;
+            LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHandlerObject;
         }
 
         private void OnDisable()
         {
-            LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHHandlerObject;
+            LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHandlerObject;
         }
 
-        [Button]
-        private void OnCreatePositionHHandlerObject()
+        private void OnCreatePositionHandlerObject()
         {
             int gridSize = leftIslands.Count * rightIslands.Count;
 
@@ -64,7 +59,7 @@ namespace Runtime.LevelModule.Controller
                         positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
                             + new Vector3(0, 0, k * -2.5f);
 
-                        PositionHandler(t);
+                        PositionHandler(t, leftIslands[i].gameObject);
                     }
                     else
                     {
@@ -73,7 +68,7 @@ namespace Runtime.LevelModule.Controller
                         positionHandlerObjects[t].gameObject.transform.position = rightIslands[newIndex].transform.position
                             + new Vector3(0, 0, (k-1) * -2.5f);
 
-                        PositionHandler(t);
+                        PositionHandler(t, rightIslands[newIndex].gameObject);
                     }
 
                     t++;
@@ -82,12 +77,13 @@ namespace Runtime.LevelModule.Controller
             }
         }
 
-        private void PositionHandler(int i)
+        private void PositionHandler(int i, GameObject islandObject)
         {
             if (positionHandlerObjects[i].Position.x == 0 || positionHandlerObjects[i].Position.x == 3)
             {
                 positionHandlerObjects[i].IsIsland = true;
-                pathfinder.AddListPosiitonHandler(positionHandlerObjects[i]);
+                pathfinder.AddListPositionHandler(positionHandlerObjects[i]);
+                GridSignals.Instance.onSetIslandPathPosition?.Invoke(positionHandlerObjects[i].Position, islandObject);
             }
         }
     }

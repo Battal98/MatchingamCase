@@ -10,20 +10,20 @@ namespace Runtime.Test
 
         private void OnEnable()
         {
-            GridSignals.Instance.RequestPosition += OnRequestPosition;
+            GridSignals.Instance.onRequestPosition += OnRequestPosition;
         }
 
-        private void OnRequestPosition(Vector2 obj)
+        private void OnRequestPosition(Vector2 pos)
         {
-            if (obj == Position)
+            if (pos == Position)
             {
-                GridSignals.Instance.ResponsePosition?.Invoke(this.transform.position);
+                GridSignals.Instance.onResponsePosition?.Invoke(this.transform.position);
             }
         }
 
         private void OnDisable()
         {
-            GridSignals.Instance.RequestPosition -= OnRequestPosition;
+            GridSignals.Instance.onRequestPosition -= OnRequestPosition;
             
         }
     }

@@ -1,5 +1,4 @@
-﻿using NaughtyAttributes;
-using Runtime.LevelModule.Signals;
+﻿using Runtime.LevelModule.Signals;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +8,8 @@ namespace Runtime.Test
     {
         private GridGraph map;
 
-        [SerializeField]
-        private Vector2 startPosition;
-        [SerializeField]
-        private Vector2 endPosition;
+        private Vector2 _startPosition;
+        private Vector2 _endPosition;
 
         [Tooltip("y parameters always be 2 or multiplier")]
         [SerializeField]
@@ -23,7 +20,7 @@ namespace Runtime.Test
         [SerializeField]
         private LineRenderer lineRenderer;
         [SerializeField]
-        private List<TestPositionHandler> positionHandlerList = new List<TestPositionHandler>();
+        private List<TestPositionHandler> positionHandlerListForIsland = new List<TestPositionHandler>();
 
         private void Start()
         {
@@ -32,9 +29,9 @@ namespace Runtime.Test
             LevelSignals.Instance.onCreatePositionHandlerObjects?.Invoke();
         }
 
-        public void AddListPosiitonHandler(TestPositionHandler positionHandler)
+        public void AddListPositionHandler(TestPositionHandler positionHandler)
         {
-            positionHandlerList.Add(positionHandler);
+            positionHandlerListForIsland.Add(positionHandler);
         }
 
         private void Initialize()
@@ -49,38 +46,40 @@ namespace Runtime.Test
             map.Walls.Clear();
         }
 
-        [Button]
-        public void PathFind()
+        public void PathFind(Vector2 startPosition, Vector2 endPosition)
         {
             Initialize();
 
-            foreach (var positionhandler in positionHandlerList)
+            _startPosition = startPosition;
+            _endPosition = endPosition;
+
+            foreach (var positionhandler in positionHandlerListForIsland)
             {
-                if (positionhandler.IsIsland && (startPosition != positionhandler.Position && endPosition != positionhandler.Position))
+                if (positionhandler.IsIsland && (_startPosition != positionhandler.Position && _endPosition != positionhandler.Position))
                 {
                     map.Walls.Add(positionhandler.Position);
                 }
             }
 
-            var path = AStar.Search(map, map.Grid[(int)startPosition.x, (int)startPosition.y], map.Grid[(int)endPosition.x, (int)endPosition.y]);
+            var path = AStar.Search(map, map.Grid[(int)_startPosition.x, (int)_startPosition.y], map.Grid[(int)_endPosition.x, (int)_endPosition.y]);
 
 
             if (path is null)
                 return;
 
-            GridSignals.Instance.RequestPosition?.Invoke(new Vector2(startPosition.x,startPosition.y));
+            GridSignals.Instance.onRequestPosition?.Invoke(new Vector2(_startPosition.x,_startPosition.y));
 
             foreach (var item in path)
             {
-                GridSignals.Instance.RequestPosition?.Invoke(new Vector2(item.Position.x, item.Position.y));
+                GridSignals.Instance.onRequestPosition?.Invoke(new Vector2(item.Position.x, item.Position.y));
             }
 
-            GridSignals.Instance.RequestPosition?.Invoke(new Vector2(endPosition.x, endPosition.y));
+            GridSignals.Instance.onRequestPosition?.Invoke(new Vector2(_endPosition.x, _endPosition.y));
         }
 
         private void OnEnable()
         {
-            GridSignals.Instance.ResponsePosition += OnResponsePosition;
+            GridSignals.Instance.onResponsePosition += OnResponsePosition;
         }
 
         private void OnResponsePosition(Vector3 obj)
@@ -93,7 +92,7 @@ namespace Runtime.Test
 
         private void OnDisable()
         {
-            GridSignals.Instance.ResponsePosition -= OnResponsePosition;
+            GridSignals.Instance.onResponsePosition -= OnResponsePosition;
         }
     }
 
