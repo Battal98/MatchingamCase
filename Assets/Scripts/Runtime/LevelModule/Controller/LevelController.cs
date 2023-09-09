@@ -64,7 +64,7 @@ namespace Runtime.LevelModule.Controller
                         positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
                             + new Vector3(0, 0, k * -2.5f);
 
-                        PositionHandler(i);
+                        PositionHandler(t);
                     }
                     else
                     {

@@ -2649,7 +2649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 3, y: 0}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &426985740
 Transform:
@@ -3873,7 +3873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 2}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &850008347
 Transform:
@@ -4173,7 +4173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 2, y: 2}
+  Position: {x: 0, y: 0}
   IsIsland: 0
 --- !u!4 &928625718
 Transform:
@@ -4219,7 +4219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 2, y: 0}
+  Position: {x: 0, y: 0}
   IsIsland: 0
 --- !u!4 &932574117
 Transform:
@@ -4265,7 +4265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 2, y: 1}
+  Position: {x: 0, y: 0}
   IsIsland: 0
 --- !u!4 &934107934
 Transform:
@@ -4793,7 +4793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 3, y: 1}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &1062553739
 Transform:
@@ -4839,7 +4839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 1}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &1088212443
 Transform:
@@ -5803,7 +5803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 1, y: 2}
+  Position: {x: 0, y: 0}
   IsIsland: 0
 --- !u!4 &1279403664
 Transform:
@@ -6118,7 +6118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 1, y: 1}
+  Position: {x: 0, y: 0}
   IsIsland: 0
 --- !u!4 &1293354531
 Transform:
@@ -6799,7 +6799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &1440269389
 Transform:
@@ -7208,6 +7208,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536200096}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1559454253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559454254}
+  m_Layer: 0
+  m_Name: PositionHolderForPathfinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559454254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559454253}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1856023387}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1594178083
 GameObject:
   m_ObjectHideFlags: 0
@@ -7440,7 +7471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454d07a2b1fe414698a489cb429ebf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 3, y: 2}
+  Position: {x: 0, y: 0}
   IsIsland: 1
 --- !u!4 &1626492613
 Transform:
@@ -8309,8 +8340,9 @@ MonoBehaviour:
   - {fileID: 785185025}
   - {fileID: 317838575}
   pathfinder: {fileID: 182474427}
-  positionHolderObject: {fileID: 2117999880462052441, guid: 1c44deaf792fe884c9df2be10b9a9b02,
+  positionHandlerObject: {fileID: 2117999880462052441, guid: 1c44deaf792fe884c9df2be10b9a9b02,
     type: 3}
+  positionHandlerHolder: {fileID: 1559454253}
   positionHandlerObjects: []
 --- !u!4 &1856023387
 Transform:
@@ -8319,12 +8351,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1856023385}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5, y: 0, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1836891577}
+  - {fileID: 1559454254}
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

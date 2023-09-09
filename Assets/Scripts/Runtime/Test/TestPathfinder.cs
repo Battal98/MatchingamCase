@@ -77,14 +77,10 @@ namespace Runtime.Test
 
             GridSignals.Instance.RequestPosition?.Invoke(new Vector2(endPosition.x, endPosition.y));
         }
+
         private void OnEnable()
         {
             GridSignals.Instance.ResponsePosition += OnResponsePosition;
-        }
-
-        private void SetPositionHandlerList()
-        {
-
         }
 
         private void OnResponsePosition(Vector3 obj)
