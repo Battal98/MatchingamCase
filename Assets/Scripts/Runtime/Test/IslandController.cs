@@ -22,7 +22,6 @@ namespace Runtime.Test
 
         private const string TAG = "SELF";
 
-        [SerializeField]
         private Vector2 _pathPosition;
 
         private void Awake()

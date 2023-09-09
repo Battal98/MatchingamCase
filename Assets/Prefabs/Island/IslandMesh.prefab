@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 84881158051794993}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.5}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 2010831350589062586}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &84881158051794992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,19 +49,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridType: 0
-  gridSurface: 0
-  gridSize: {x: 0, y: 0}
-  gridOffsets: {x: 0, y: 0}
-  directions: {x: 1, y: 1}
-  isRotateObject: 0
+  gridSurface: 1
+  gridSize: {x: 4, y: 4}
+  gridOffsets: {x: 0.5, y: 0.5}
+  directions: {x: -1, y: 1}
+  isRotateObject: 1
   gridCount: 0
   radius: 0
   heightCount: 0
   height: 0
-  gridObject: {fileID: 0}
+  gridObject: {fileID: 3346537792644478880, guid: ddcb5dd411ac4224a84d4bef8377fa50,
+    type: 3}
   gridPivotTarget: {fileID: 2010831350589062586}
   gridObjectsHolder: {fileID: 2010831350589062586}
-  slotList: []
+  slotList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   isFirstObject: 0
   islandState: 0
   _pathPosition: {x: 0, y: 0}
@@ -152,7 +169,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 150613124971921646}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0.375, y: 0.5, z: -0.375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
