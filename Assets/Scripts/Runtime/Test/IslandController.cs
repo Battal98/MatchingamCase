@@ -8,12 +8,6 @@ namespace Runtime.Test
     {
         [BoxGroup(TAG)]
         [SerializeField]
-        private Transform[] pathTargets;
-        [BoxGroup(TAG)]
-        [SerializeField]
-        private GameObject targetObject;
-        [BoxGroup(TAG)]
-        [SerializeField]
         private bool isFirstObject = false;
         [BoxGroup(TAG)]
         [SerializeField]
@@ -28,11 +22,6 @@ namespace Runtime.Test
         private void Awake()
         {
             SetIslandState();
-        }
-
-        private void OnEnable()
-        {
-            SetTargetObjectActive(false);
         }
 
         private void SetIslandState()
@@ -71,16 +60,6 @@ namespace Runtime.Test
         public bool IsFirstObject(bool isFirst = false)
         {
             return isFirstObject;
-        }
-
-        public Transform[] GetPathTargets()
-        {
-            return pathTargets;
-        }
-
-        public void SetTargetObjectActive(bool isActive)
-        {
-            targetObject.SetActive(isActive);
         }
     }
 }
