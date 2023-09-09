@@ -62,26 +62,9 @@ MonoBehaviour:
     type: 3}
   gridPivotTarget: {fileID: 2010831350589062586}
   gridObjectsHolder: {fileID: 2010831350589062586}
-  slotList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  slotList: []
   isFirstObject: 0
   islandState: 0
-  _pathPosition: {x: 0, y: 0}
 --- !u!33 &84881158051794997
 MeshFilter:
   m_ObjectHideFlags: 0

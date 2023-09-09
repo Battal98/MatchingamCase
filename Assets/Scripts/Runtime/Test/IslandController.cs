@@ -58,6 +58,11 @@ namespace Runtime.Test
             float gridSize = GetGridIndex();
             _maxGridSize = (int)gridSize * (int)gridSize;
 
+            if (_maxGridSize == 0)
+            {
+                return;
+            }
+
             if (GetISlotList().Count >= _maxGridSize)
             {
                 for (int i = 0; i < GetISlotList().Count; i++)
