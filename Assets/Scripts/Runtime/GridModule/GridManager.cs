@@ -3,6 +3,7 @@ using Runtime.GridModule.Abstraction;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public enum GridSurface
@@ -144,7 +145,7 @@ public class GridManager : MonoBehaviour
 
     private void CreateAndSetupGridObject(Vector3 position, Quaternion rotation)
     {
-        var obj = Instantiate(gridObject);
+        var obj = PrefabUtility.InstantiatePrefab(gridObject as GameObject) as GameObject;
         var objComponent = obj.GetComponent<Slot>();
         obj.transform.SetParent(gridObjectsHolder);
         obj.transform.position = position;
