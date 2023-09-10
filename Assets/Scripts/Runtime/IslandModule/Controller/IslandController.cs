@@ -216,6 +216,7 @@ namespace Runtime.PathfindModule
                     break;
                 }
             }
+            movableObjects.Reverse();
         }
         public async void ChooseCharactersForMovement(List<Vector3> pathList, IslandController targetIsland)
         {
