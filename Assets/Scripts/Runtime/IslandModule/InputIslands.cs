@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Runtime.Abstactions;
+using Runtime.Pathfind;
 using Runtime.PathfindModule;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,7 +50,7 @@ public class InputIslands : MonoBehaviour
 
                         _secondSelectedObject = null;
 
-                        pathfinder.ClearPath();
+                        PathSignals.Instance.onClearPath?.Invoke();
 
                         _firstSelectedObject = interactable.GetIslandController();
 
@@ -60,7 +61,12 @@ public class InputIslands : MonoBehaviour
                     else
                     {
                         _secondSelectedObject = interactable.GetIslandController();
-
+                        if (_firstSelectedObject == _secondSelectedObject)
+                        {
+                            _firstSelectedObject = null;
+                            _secondSelectedObject = null;
+                            return;
+                        }
                         _endPosition = _secondSelectedObject.GetPathPosition();
 
                         pathfinder.PathFind(_startPosition, _endPosition);
@@ -80,7 +86,7 @@ public class InputIslands : MonoBehaviour
 
                 _clickedObjectList.Clear();
 
-                pathfinder.ClearPath();
+                PathSignals.Instance.onClearPath?.Invoke();
             }
         }
     }

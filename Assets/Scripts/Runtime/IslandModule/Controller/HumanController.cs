@@ -12,5 +12,10 @@ namespace Runtime.IslandModule.Controller
         {
             this.gameObject.SetActive(isActive);
         }
+
+        public CharacterColor GetColorType()
+        {
+            return characterColor;
+        }
     }
 }

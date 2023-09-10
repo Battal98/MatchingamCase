@@ -1,4 +1,6 @@
-﻿using Runtime.LevelModule.Signals;
+﻿using Astar.PathfinderExample;
+using Runtime.LevelModule.Signals;
+using Runtime.Pathfind;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +31,11 @@ namespace Runtime.PathfindModule
             LevelSignals.Instance.onCreatePositionHandlerObjects?.Invoke();
         }
 
+        private void OnClearPath()
+        {
+            ClearPath();
+        }
+
         public void AddListPositionHandler(PositionHandler positionHandler)
         {
             positionHandlerListForIsland.Add(positionHandler);
@@ -51,7 +58,7 @@ namespace Runtime.PathfindModule
             map.Walls.Clear();
         }
 
-        public void ClearPath()
+        private void ClearPath()
         {
             _positionList.Clear();
             lineRenderer.positionCount = 0;
@@ -91,6 +98,7 @@ namespace Runtime.PathfindModule
         private void OnEnable()
         {
             GridSignals.Instance.onResponsePosition += OnResponsePosition;
+            PathSignals.Instance.onClearPath += OnClearPath;
         }
 
         private void OnResponsePosition(Vector3 obj)
@@ -104,6 +112,7 @@ namespace Runtime.PathfindModule
         private void OnDisable()
         {
             GridSignals.Instance.onResponsePosition -= OnResponsePosition;
+            PathSignals.Instance.onClearPath -= OnClearPath;
         }
     }
 

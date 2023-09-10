@@ -22,7 +22,12 @@ public class Slot : MonoBehaviour, ISlotObject
     private SlotState slotState;
 
     [SerializeField]
+    private CharacterColor slotColor;  
+
+    [SerializeField]
     private List<HumanController> characters = new List<HumanController>();
+
+    private HumanController _activeController;
 
     private void CloseAllCharacterGameobjects()
     {
@@ -32,12 +37,25 @@ public class Slot : MonoBehaviour, ISlotObject
         }
     }
 
-    public void SetParentForHuman(GameObject obj)
+    public HumanController GetActiveObjectController()
     {
-        obj.transform.SetParent(this.transform);
+        return _activeController;
     }
 
-    public GameObject GetCharacterList()
+    public void SetParentForHuman(GameObject obj)
+    {
+        characters.Clear();
+
+        obj.transform.SetParent(this.transform);
+
+        var objComponent = obj.GetComponent<HumanController>();
+
+        characters.Add(objComponent);
+
+        _activeController = objComponent;
+    }
+
+    public GameObject GetCharacteObject()
     {
         int k = 0;
 
@@ -73,12 +91,26 @@ public class Slot : MonoBehaviour, ISlotObject
         slotState = state;
     }
 
-    public void SetCharacterColor(CharacterColor colorType)
+    public CharacterColor GetSlotColorType()
+    {
+        return slotColor;
+    }
+
+    public void SetSlotColor(CharacterColor colorType)
+    {
+        slotColor = colorType;
+    }
+
+    public void SetCharacterColorInitialize(CharacterColor colorType)
     {
         CloseAllCharacterGameobjects();
 
         slotState = SlotState.Full;
 
         characters[(int)colorType].SetHumanActivity(true);
+
+        _activeController = characters[(int)colorType];
+
+        SetSlotColor(colorType);
     }
 }
