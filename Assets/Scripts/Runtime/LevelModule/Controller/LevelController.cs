@@ -1,5 +1,7 @@
-﻿using Runtime.LevelModule.Signals;
+﻿using Runtime.LevelModule.Datas;
+using Runtime.LevelModule.Signals;
 using Runtime.PathfindModule;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,17 +23,39 @@ namespace Runtime.LevelModule.Controller
         [SerializeField]
         private GameObject positionHandlerHolder;
 
-        [SerializeField]
-        private List<PositionHandler> positionHandlerObjects = new List<PositionHandler>();
+        private List<PositionHandler> _positionHandlerObjects = new List<PositionHandler>();
+
+        private GameLevelData _levelData;
+
+        private int completedCount;
 
         private void OnEnable()
         {
             LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHandlerObject;
+            LevelSignals.Instance.onLevelInitializeDone += OnLevelInitializeDone;
+            LevelSignals.Instance.onCalculateCopmletedCount += OnCalculateCompletedCount;
         }
 
         private void OnDisable()
         {
-            LevelSignals.Instance.onCreatePositionHandlerObjects += OnCreatePositionHandlerObject;
+            LevelSignals.Instance.onCreatePositionHandlerObjects -= OnCreatePositionHandlerObject;
+            LevelSignals.Instance.onLevelInitializeDone -= OnLevelInitializeDone;
+            LevelSignals.Instance.onCalculateCopmletedCount -= OnCalculateCompletedCount;
+        }
+
+        private void OnLevelInitializeDone()
+        {
+            _levelData = LevelSignals.Instance.onSendToData.Invoke();
+        }
+
+        private void OnCalculateCompletedCount()
+        {
+            completedCount++;
+
+            if (completedCount >= _levelData.LevelCompletedCount)
+            {
+                LevelSignals.Instance.onLevelSuccessful?.Invoke();
+            }
         }
 
         private void OnCreatePositionHandlerObject()
@@ -42,7 +66,7 @@ namespace Runtime.LevelModule.Controller
             {
                 var obj = Instantiate(positionHandlerObject, positionHandlerHolder.transform);
                 var objComponent = obj.GetComponent<PositionHandler>();
-                positionHandlerObjects.Add(objComponent);
+                _positionHandlerObjects.Add(objComponent);
             }
 
             int t = 0;
@@ -53,8 +77,8 @@ namespace Runtime.LevelModule.Controller
                 {
                     if (i < leftIslands.Count)
                     {
-                        positionHandlerObjects[t].Position = new Vector2(k, i);
-                        positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
+                        _positionHandlerObjects[t].Position = new Vector2(k, i);
+                        _positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
                             + new Vector3(0, (leftIslands[i].transform.localScale.y/2f), (k * -1.5f) - (leftIslands[i].transform.localScale.z / 2f));
 
                         PositionHandler(t, leftIslands[i].gameObject);
@@ -62,8 +86,8 @@ namespace Runtime.LevelModule.Controller
                     else
                     {
                         var newIndex = Mathf.Abs(i - leftIslands.Count);
-                        positionHandlerObjects[t].Position = new Vector2(k+2, newIndex);
-                        positionHandlerObjects[t].gameObject.transform.position = rightIslands[newIndex].transform.position
+                        _positionHandlerObjects[t].Position = new Vector2(k+2, newIndex);
+                        _positionHandlerObjects[t].gameObject.transform.position = rightIslands[newIndex].transform.position
                             + new Vector3(0, (rightIslands[newIndex].transform.localScale.y / 2f), ((k-1) * -1.5f) + (rightIslands[newIndex].transform.localScale.z / 2f));
 
                         PositionHandler(t, rightIslands[newIndex].gameObject);
@@ -77,11 +101,11 @@ namespace Runtime.LevelModule.Controller
 
         private void PositionHandler(int i, GameObject islandObject)
         {
-            if (positionHandlerObjects[i].Position.x == 0 || positionHandlerObjects[i].Position.x == 3)
+            if (_positionHandlerObjects[i].Position.x == 0 || _positionHandlerObjects[i].Position.x == 3)
             {
-                positionHandlerObjects[i].IsIsland = true;
-                pathfinder.AddListPositionHandler(positionHandlerObjects[i]);
-                GridSignals.Instance.onSetIslandPathPosition?.Invoke(positionHandlerObjects[i].Position, islandObject);
+                _positionHandlerObjects[i].IsIsland = true;
+                pathfinder.AddListPositionHandler(_positionHandlerObjects[i]);
+                GridSignals.Instance.onSetIslandPathPosition?.Invoke(_positionHandlerObjects[i].Position, islandObject);
             }
         }
     }

@@ -2,6 +2,7 @@
 using Runtime.LevelModule.Commands;
 using Runtime.LevelModule.Datas;
 using Runtime.LevelModule.Signals;
+using System;
 using UnityEngine;
 
 namespace Runtime.LevelModule
@@ -51,6 +52,7 @@ namespace Runtime.LevelModule
                 LevelSignals.Instance.onNextLevel += OnNextLevel;
                 LevelSignals.Instance.onRestartLevel += OnRestartLevel;
                 LevelSignals.Instance.onLevelFailed += OnLevelFailed;
+                LevelSignals.Instance.onSendToData += OnSenToData;
 
                 LevelSignals.Instance.onGetLevel += OnGetLevelID;
                 LevelSignals.Instance.onGetLevelForText += OnGetLevelIdForText;
@@ -63,11 +65,17 @@ namespace Runtime.LevelModule
                 LevelSignals.Instance.onNextLevel -= OnNextLevel;
                 LevelSignals.Instance.onRestartLevel -= OnRestartLevel;
                 LevelSignals.Instance.onLevelFailed -= OnLevelFailed;
+                LevelSignals.Instance.onSendToData -= OnSenToData;
 
                 LevelSignals.Instance.onGetLevel -= OnGetLevelID;
                 LevelSignals.Instance.onGetLevelForText -= OnGetLevelIdForText;
             }
 
+        }
+
+        private GameLevelData OnSenToData()
+        {
+            return _gameLevelData;
         }
 
         private void OnDisable()

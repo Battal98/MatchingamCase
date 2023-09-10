@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dae67517f39ccf44bdba9312529ac0c, type: 3}
   m_Name: CD_Level
   m_EditorClassIdentifier: 
-  LevelData:
+  LevelInfo:
     LevelID: 0
+    LevelIDForText: 0
   GameLevelDatas:
-  - CharacterTypeCount: 2
-  - CharacterTypeCount: 3
-  - CharacterTypeCount: 4
-  - CharacterTypeCount: 4
+  - LevelCompletedCount: 3
+  - LevelCompletedCount: 3
+  - LevelCompletedCount: 3
+  - LevelCompletedCount: 3

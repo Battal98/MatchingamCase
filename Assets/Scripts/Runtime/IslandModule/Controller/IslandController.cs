@@ -4,6 +4,7 @@ using Runtime.Abstactions;
 using Runtime.GridModule.Slots;
 using Runtime.IslandModule.Controller;
 using Runtime.IslandModule.Enums;
+using Runtime.LevelModule.Signals;
 using Runtime.Pathfind;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace Runtime.PathfindModule
 
         private bool _isIslandFull = false;
         private bool _iHaveACharacter = false;
+        private bool _isCompleted = false;
 
         private int _maxGridSize;
         private int _emptySlotCount;
@@ -139,6 +141,7 @@ namespace Runtime.PathfindModule
             else if (fullCount == totalCount)
             {
                 islandState = IslandState.Full;
+                _isIslandFull = true;
             }
 
             CalculateMovableObjects();
@@ -224,7 +227,7 @@ namespace Runtime.PathfindModule
 
             CalculateMovableObjects();
 
-            if (targetIsland.HasEnoughEmptySlots(movableObjects.Count) && targetIsland.HasSameColorGroup(movableObjects))
+            if (targetIsland.HasEnoughEmptySlots(movableObjects.Count) && targetIsland.HasSameColorGroup(movableObjects) && !_isCompleted)
             {
                 for (int i = movableObjects.Count - 1; i >=0 ; i--)
                 {
@@ -245,8 +248,8 @@ namespace Runtime.PathfindModule
                     targetIsland.SetInitializeIslandState();
 
                     targetIsland.SetSlotsColorType(movableObjects[i].GetColorType());
-                }
 
+                }
 
                 this.SetInitializeIslandState();
 
@@ -261,11 +264,23 @@ namespace Runtime.PathfindModule
             }
         }
 
+        public void IsCompletedIsland(bool state)
+        {
+            _isCompleted = state;
+        }
+
         public void SetSlotsColorType(CharacterColor colorType)
         {
             for (int i = 0; i < fullSlots.Count; i++)
             {
                 fullSlots[i].SetSlotColor(colorType);
+            }
+
+            if (IsTargetIslandFullAndSameColor())
+            {
+                IsCompletedIsland(true);
+
+                LevelSignals.Instance.onCalculateCopmletedCount?.Invoke();
             }
         }
 
@@ -297,6 +312,32 @@ namespace Runtime.PathfindModule
             return this;
         }
 
+        public bool IsTargetIslandFullAndSameColor()
+        {
+            // Check if the target island is full
+            if (islandState == IslandState.Full)
+            {
+                // Check if all color groups are the same
+                if (fullSlots.Count > 0)
+                {
+                    CharacterColor targetColor = fullSlots[0].GetSlotColorType();
+                    foreach (var slot in fullSlots)
+                    {
+                        if (slot.GetSlotColorType() != targetColor)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
         public void SetInitializeCharacters()
         {
             int t = 0;

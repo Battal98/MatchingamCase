@@ -1,4 +1,5 @@
 ﻿using Extentions;
+using Runtime.LevelModule.Datas;
 using System;
 using UnityEngine.Events;
 
@@ -15,6 +16,9 @@ namespace Runtime.LevelModule.Signals
         public UnityAction onNextLevel = delegate { };
         public UnityAction onRestartLevel = delegate { };
         public UnityAction onCreatePositionHandlerObjects = delegate { };
+        public UnityAction onCalculateCopmletedCount = delegate { };
+
+        public Func<GameLevelData> onSendToData = delegate { return default; };
 
         public Func<int> onGetLevel = delegate { return 0; };
         public Func<int> onGetLevelForText = delegate { return 0; };
