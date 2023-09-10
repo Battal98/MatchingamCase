@@ -121,11 +121,12 @@ namespace UIModules.Managers
         private void OnLevelInitialize()
         {
             InitPanels();
-            _levelPanelController.SetLevelText(LevelSignals.Instance.onGetLevel.Invoke() + 1);
+            _levelPanelController.SetLevelText(LevelSignals.Instance.onGetLevelForText.Invoke() + 1);
         }
 
         public void NextLevelButton()
         {
+            OnLevelInitialize();
             LevelSignals.Instance.onNextLevel?.Invoke();
         }
 

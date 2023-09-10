@@ -2,6 +2,7 @@
 using Runtime.LevelModule.Signals;
 using Runtime.Pathfind;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Runtime.PathfindModule
@@ -24,6 +25,9 @@ namespace Runtime.PathfindModule
         [SerializeField]
         private List<PositionHandler> positionHandlerListForIsland = new List<PositionHandler>();
 
+        [SerializeField]
+        private InputIslands inputIslands;
+
         private void Start()
         {
             Initialize();
@@ -34,6 +38,8 @@ namespace Runtime.PathfindModule
         private void OnClearPath()
         {
             ClearPath();
+
+            inputIslands.ClearSelection();
         }
 
         public void AddListPositionHandler(PositionHandler positionHandler)
@@ -106,6 +112,7 @@ namespace Runtime.PathfindModule
             _positionList.Add(obj);
 
             lineRenderer.positionCount = _positionList.Count;
+
             lineRenderer.SetPositions(_positionList.ToArray());
         }
 

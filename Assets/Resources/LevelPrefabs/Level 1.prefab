@@ -49,6 +49,8 @@ MonoBehaviour:
     m_Bits: 256
   _clickedObjectList: []
   pathfinder: {fileID: 182474429}
+  offsetY: 0.5
+  duration: 0.5
 --- !u!1 &182474425
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,6 +99,7 @@ MonoBehaviour:
   gridGraphSize: {x: 4, y: 4}
   lineRenderer: {fileID: 182474426}
   positionHandlerListForIsland: []
+  inputIslands: {fileID: 44911947}
 --- !u!120 &182474426
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -105,7 +108,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 182474425}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -603,7 +606,7 @@ PrefabInstance:
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.data[1].ColorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
@@ -719,7 +722,7 @@ PrefabInstance:
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.data[2].ColorType
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794993, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
@@ -820,7 +823,7 @@ PrefabInstance:
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
@@ -830,12 +833,17 @@ PrefabInstance:
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.data[0].ColorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.data[1].ColorType
-      value: 1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
+        type: 3}
+      propertyPath: initializeCharacterDatas.Array.data[2].ColorType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794993, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
@@ -1017,7 +1025,7 @@ PrefabInstance:
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
@@ -1041,13 +1049,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
+      propertyPath: initializeCharacterDatas.Array.data[0].ColorType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
+        type: 3}
       propertyPath: initializeCharacterDatas.Array.data[1].ColorType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794992, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}
       propertyPath: initializeCharacterDatas.Array.data[2].ColorType
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 84881158051794993, guid: 62f350c24f649f1469f49ece84819605,
         type: 3}

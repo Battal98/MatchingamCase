@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using NaughtyAttributes;
 using Runtime.Abstactions;
-using Runtime.GridModule.Slots;
 using Runtime.IslandModule.Controller;
 using Runtime.IslandModule.Enums;
 using Runtime.LevelModule.Signals;
@@ -9,7 +8,6 @@ using Runtime.Pathfind;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Runtime.PathfindModule
@@ -229,35 +227,56 @@ namespace Runtime.PathfindModule
 
             if (targetIsland.HasEnoughEmptySlots(movableObjects.Count) && targetIsland.HasSameColorGroup(movableObjects) && !_isCompleted)
             {
-                for (int i = movableObjects.Count - 1; i >=0 ; i--)
+                for (int k = 0; k < pathList.Count; k++)
                 {
-                    var lastPosition = targetIsland.GetEmptySlotPosition(movableObjects[i].gameObject);
+                    pathList[k] += new Vector3(0, +0.2f, 0);
+                }
+
+                for (int i = movableObjects.Count - 1; i >= 0; i--)
+                {
+                    var movableObject = movableObjects[i]; 
+
+                    var lastPosition = targetIsland.GetEmptySlotPosition(movableObject.gameObject);
 
                     pathList.Add(lastPosition);
 
-                    movableObjects[i].transform.DOPath(pathList.ToArray(), 2f, PathType.Linear).OnComplete(() =>
+                    movableObject.SetAnimation(HumanAnimation.Run);
+
+                    bool isClearPath = i == 0;
+
+                    movableObject.transform.DOPath(pathList.ToArray(), 3f, PathType.Linear).OnWaypointChange(index =>
                     {
-                        movableObjects[i].transform.DORotate(new Vector3(0, 180, 0), 0.2f, RotateMode.LocalAxisAdd);
+                        if (index < pathList.Count - 1)
+                        {
+                            Vector3 direction = (pathList[index + 1] - pathList[index]).normalized;
+
+                            Quaternion rotation = Quaternion.LookRotation(-direction, Vector3.up);
+
+                            movableObject.transform.DORotateQuaternion(rotation, 0.1f);
+                        }
+                    }).OnComplete(() =>
+                    {
+                        movableObject.SetAnimation(HumanAnimation.Idle);
+
+                        movableObject.transform.DORotate(new Vector3(0,90,0), 0.3f, RotateMode.LocalAxisAdd);
+
+                        if (isClearPath)
+                        {
+                            PathSignals.Instance.onClearPath?.Invoke();
+                        }
                     });
 
-                    await Task.Delay(TimeSpan.FromSeconds(0.15f));
+                    await Task.Delay(TimeSpan.FromSeconds(0.5f));
 
-                    RemoveHumanFromSourceIsland(movableObjects[i].gameObject);
+                    RemoveHumanFromSourceIsland(movableObject.gameObject);
 
-                    // Set the target island's state
                     targetIsland.SetInitializeIslandState();
 
-                    targetIsland.SetSlotsColorType(movableObjects[i].GetColorType());
-
+                    targetIsland.SetSlotsColorType(movableObject.GetColorType());
                 }
 
                 this.SetInitializeIslandState();
-
-                await Task.Delay(TimeSpan.FromSeconds(0.15f * movableObjects.Count));
-
-                PathSignals.Instance.onClearPath?.Invoke();
             }
-
             else
             {
                 PathSignals.Instance.onClearPath?.Invoke();

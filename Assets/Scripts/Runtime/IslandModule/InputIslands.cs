@@ -16,8 +16,16 @@ public class InputIslands : MonoBehaviour
     [SerializeField]
     private Pathfinder pathfinder;
 
+    [SerializeField]
+    private float offsetY = 0.25f;
+    [SerializeField]
+    private float duration = 0.5f;
+
     private Vector2 _startPosition;
     private Vector2 _endPosition;
+
+    private Vector3 _initialPosFirst = Vector3.zero;
+    private Vector3 _initialPosSecond = Vector3.zero;
 
     private IslandController _firstSelectedObject;
     private IslandController _secondSelectedObject;
@@ -26,68 +34,104 @@ public class InputIslands : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            HandleMouseClick();
+        }
+    }
 
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+    private void HandleMouseClick()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            HandleObjectClick(hit.collider.gameObject);
+        }
+        else
+        {
+            PathSignals.Instance.onClearPath?.Invoke();
+        }
+    }
+
+    private void HandleObjectClick(GameObject clickedObject)
+    {
+        if (!clickedObject.TryGetComponent(out IInteractable interactable))
+        {
+            return;
+        }
+
+        IslandController islandController = interactable.GetIslandController();
+
+        if (islandController != null)
+        {
+            _clickedObjectList.Add(islandController);
+
+            if (_firstSelectedObject == null)
             {
-                if(!hit.collider.TryGetComponent(out IInteractable interactable))
+                if (!interactable.IsInteractable())
                 {
+                    PathSignals.Instance.onClearPath?.Invoke();
                     return;
                 }
 
-                if (interactable.GetIslandController() != null)
-                {
-                    _clickedObjectList.Add(interactable.GetIslandController());
+                _secondSelectedObject = null;
 
-                    if (_firstSelectedObject == null)
-                    {
-                        if (!interactable.IsInteractable())
-                        {
-                            _clickedObjectList.Clear();
-                            return;
-                        }
+                PathSignals.Instance.onClearPath?.Invoke();
 
-                        _secondSelectedObject = null;
+                _firstSelectedObject = islandController;
+                _firstSelectedObject.IsFirstObject(true);
 
-                        PathSignals.Instance.onClearPath?.Invoke();
+                _startPosition = _firstSelectedObject.GetPathPosition();
 
-                        _firstSelectedObject = interactable.GetIslandController();
+                _initialPosFirst = _firstSelectedObject.gameObject.transform.position;
 
-                        _firstSelectedObject.IsFirstObject(true);
+                float endY1 = _initialPosFirst.y + offsetY;
 
-                        _startPosition = _firstSelectedObject.GetPathPosition();
-                    }
-                    else
-                    {
-                        _secondSelectedObject = interactable.GetIslandController();
-                        if (_firstSelectedObject == _secondSelectedObject)
-                        {
-                            _firstSelectedObject = null;
-                            _secondSelectedObject = null;
-                            return;
-                        }
-                        _endPosition = _secondSelectedObject.GetPathPosition();
-
-                        pathfinder.PathFind(_startPosition, _endPosition);
-
-                        _firstSelectedObject.ChooseCharactersForMovement(pathList: pathfinder.GetPathPositionList(), _secondSelectedObject);
-
-                        _firstSelectedObject = null;
-
-                        _clickedObjectList.Clear();
-                    }
-                }
+                _firstSelectedObject.transform.DOMoveY(endY1, duration);
             }
             else
             {
-                _firstSelectedObject = null;
-                _secondSelectedObject = null;
+                _secondSelectedObject = islandController;
 
-                _clickedObjectList.Clear();
+                if (_firstSelectedObject == _secondSelectedObject)
+                {
+                    PathSignals.Instance.onClearPath?.Invoke();
+                    return;
+                }
 
-                PathSignals.Instance.onClearPath?.Invoke();
+                _endPosition = _secondSelectedObject.GetPathPosition();
+
+                ResetIslandPositions();
+
+                pathfinder.PathFind(_startPosition, _endPosition);
+
+                _firstSelectedObject.ChooseCharactersForMovement(pathList: pathfinder.GetPathPositionList(), _secondSelectedObject);
             }
         }
+        else
+        {
+            PathSignals.Instance.onClearPath?.Invoke();
+        }
+    }
+
+    public void ResetIslandPositions()
+    {
+        if (_firstSelectedObject != null)
+        {
+            _firstSelectedObject.transform.DOMoveY(_initialPosFirst.y, duration);
+        }
+    }  
+
+    public void ClearSelection()
+    {
+        ResetIslandPositions();
+
+        _initialPosFirst = Vector3.zero;
+        _initialPosSecond = Vector3.zero;
+
+        _firstSelectedObject = null;
+        _secondSelectedObject = null;
+
+        _clickedObjectList.Clear();
     }
 }
