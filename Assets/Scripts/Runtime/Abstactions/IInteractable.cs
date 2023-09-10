@@ -1,4 +1,4 @@
-﻿using Runtime.Test;
+﻿using Runtime.PathfindModule;
 using UnityEngine;
 
 namespace Runtime.Abstactions
@@ -7,5 +7,7 @@ namespace Runtime.Abstactions
     {
         Vector2 GetPathPosition();
         IslandController GetIslandController();
+
+        bool IsInteractable();
     }
 }

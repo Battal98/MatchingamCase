@@ -1,4 +1,5 @@
 using Runtime.GridModule.Abstraction;
+using Runtime.IslandModule.Controller;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,27 +22,38 @@ public class Slot : MonoBehaviour, ISlotObject
     private SlotState slotState;
 
     [SerializeField]
-    private CharacterColor characterColor;
+    private List<HumanController> characters = new List<HumanController>();
 
-    [SerializeField]
-    private List<GameObject> characters = new List<GameObject>();
-
-    private void Awake()
+    private void CloseAllCharacterGameobjects()
     {
-        SetCharacters();
-    }
-
-    private void SetCharacters()
-    {
-        characters.CloseAllListElements();
-
-        if (slotState == SlotState.Full)
+        for (int i = 0; i < characters.Count; i++)
         {
-            characters[(int)characterColor].SetActive(true);
+            characters[i].gameObject.SetActive(false);
         }
     }
 
-    public void SnapObject(GameObject obj)
+    public void SetParentForHuman(GameObject obj)
+    {
+        obj.transform.SetParent(this.transform);
+    }
+
+    public GameObject GetCharacterList()
+    {
+        int k = 0;
+
+        for (int i = 0; i < characters.Count; i++)
+        {
+            if (characters[i].gameObject.activeInHierarchy)
+            {
+                k = i;
+                break;
+            }
+        };
+
+        return characters[k].gameObject; ;
+    }
+
+    public void SnapObject()
     {
         slotState = SlotState.Full;
     }
@@ -54,5 +66,19 @@ public class Slot : MonoBehaviour, ISlotObject
     public SlotState GetSlotState()
     {
         return slotState;
+    }
+
+    public void SetSlotState(SlotState state)
+    {
+        slotState = state;
+    }
+
+    public void SetCharacterColor(CharacterColor colorType)
+    {
+        CloseAllCharacterGameobjects();
+
+        slotState = SlotState.Full;
+
+        characters[(int)colorType].SetHumanActivity(true);
     }
 }

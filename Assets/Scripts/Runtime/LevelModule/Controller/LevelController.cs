@@ -1,8 +1,6 @@
 ﻿using Runtime.LevelModule.Signals;
-using Runtime.Test;
+using Runtime.PathfindModule;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
-using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.LevelModule.Controller
@@ -15,7 +13,7 @@ namespace Runtime.LevelModule.Controller
         private List<GameObject> rightIslands = new List<GameObject>();
 
         [SerializeField]
-        private TestPathfinder pathfinder;
+        private Pathfinder pathfinder;
 
         [SerializeField]
         private GameObject positionHandlerObject;
@@ -24,7 +22,7 @@ namespace Runtime.LevelModule.Controller
         private GameObject positionHandlerHolder;
 
         [SerializeField]
-        private List<TestPositionHandler> positionHandlerObjects = new List<TestPositionHandler>();
+        private List<PositionHandler> positionHandlerObjects = new List<PositionHandler>();
 
         private void OnEnable()
         {
@@ -43,7 +41,7 @@ namespace Runtime.LevelModule.Controller
             for (int i = 0; i < gridSize; i++)
             {
                 var obj = Instantiate(positionHandlerObject, positionHandlerHolder.transform);
-                var objComponent = obj.GetComponent<TestPositionHandler>();
+                var objComponent = obj.GetComponent<PositionHandler>();
                 positionHandlerObjects.Add(objComponent);
             }
 
@@ -57,7 +55,7 @@ namespace Runtime.LevelModule.Controller
                     {
                         positionHandlerObjects[t].Position = new Vector2(k, i);
                         positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
-                            + new Vector3(0, 0, k * -2.5f);
+                            + new Vector3(0, (leftIslands[i].transform.localScale.y/2f), (k * -1.5f) - (leftIslands[i].transform.localScale.z / 2f));
 
                         PositionHandler(t, leftIslands[i].gameObject);
                     }
@@ -66,7 +64,7 @@ namespace Runtime.LevelModule.Controller
                         var newIndex = Mathf.Abs(i - leftIslands.Count);
                         positionHandlerObjects[t].Position = new Vector2(k+2, newIndex);
                         positionHandlerObjects[t].gameObject.transform.position = rightIslands[newIndex].transform.position
-                            + new Vector3(0, 0, (k-1) * -2.5f);
+                            + new Vector3(0, (rightIslands[newIndex].transform.localScale.y / 2f), ((k-1) * -1.5f) + (rightIslands[newIndex].transform.localScale.z / 2f));
 
                         PositionHandler(t, rightIslands[newIndex].gameObject);
                     }

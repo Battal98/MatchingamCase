@@ -2,7 +2,10 @@ namespace Runtime.IslandModule.Enums
 {
 	public enum IslandState
 	{
-		Usable,
+		Empty,
+		Quarter,
+		Half,
+		QuarterHalf,
 		Full,
 	} 
 }

@@ -117,7 +117,7 @@ public class GridManager : MonoBehaviour
         return (int) gridSize.x * (int) gridSize.y;
     }
 
-    public List<Slot> GetISlotList()
+    public List<Slot> GetSlotList()
     {
         return slotList;
     }

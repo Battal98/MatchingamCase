@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Runtime.Test
+namespace Runtime.PathfindModule
 {
-    public class TestPositionHandler : MonoBehaviour
+    public class PositionHandler : MonoBehaviour
     {
         public Vector2 Position;
 

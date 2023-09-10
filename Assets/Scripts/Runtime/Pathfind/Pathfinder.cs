@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Runtime.Test
+namespace Runtime.PathfindModule
 {
-    public class TestPathfinder : MonoBehaviour
+    public class Pathfinder : MonoBehaviour
     {
         private GridGraph map;
 
@@ -15,12 +15,12 @@ namespace Runtime.Test
         [SerializeField]
         private Vector2 gridGraphSize;
 
-        private List<Vector3> positionList = new List<Vector3>();
+        private List<Vector3> _positionList = new List<Vector3>();
 
         [SerializeField]
         private LineRenderer lineRenderer;
         [SerializeField]
-        private List<TestPositionHandler> positionHandlerListForIsland = new List<TestPositionHandler>();
+        private List<PositionHandler> positionHandlerListForIsland = new List<PositionHandler>();
 
         private void Start()
         {
@@ -29,14 +29,19 @@ namespace Runtime.Test
             LevelSignals.Instance.onCreatePositionHandlerObjects?.Invoke();
         }
 
-        public void AddListPositionHandler(TestPositionHandler positionHandler)
+        public void AddListPositionHandler(PositionHandler positionHandler)
         {
             positionHandlerListForIsland.Add(positionHandler);
         }
 
+        public List<Vector3> GetPathPositionList()
+        {
+            return _positionList;
+        }
+
         private void Initialize()
         {
-            positionList.Clear();
+            _positionList.Clear();
 
             map ??= new GridGraph((int)gridGraphSize.x, (int)gridGraphSize.y);
 
@@ -44,6 +49,12 @@ namespace Runtime.Test
             map.Forests ??= new List<Vector2>();
 
             map.Walls.Clear();
+        }
+
+        public void ClearPath()
+        {
+            _positionList.Clear();
+            lineRenderer.positionCount = 0;
         }
 
         public void PathFind(Vector2 startPosition, Vector2 endPosition)
@@ -84,10 +95,10 @@ namespace Runtime.Test
 
         private void OnResponsePosition(Vector3 obj)
         {
-            positionList.Add(obj);
+            _positionList.Add(obj);
 
-            lineRenderer.positionCount = positionList.Count;
-            lineRenderer.SetPositions(positionList.ToArray());
+            lineRenderer.positionCount = _positionList.Count;
+            lineRenderer.SetPositions(_positionList.ToArray());
         }
 
         private void OnDisable()
