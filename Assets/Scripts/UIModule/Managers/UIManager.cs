@@ -7,6 +7,8 @@ using TMPro;
 using CoreGameModule.Signals;
 using UIModules.Signals;
 using Runtime.LevelModule.Signals;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace UIModules.Managers
 {
@@ -20,6 +22,10 @@ namespace UIModules.Managers
         private List<GameObject> panels;   
         [SerializeField]
         private TextMeshProUGUI levelText;
+
+        [SerializeField]
+        private Volume volume;
+
         #endregion
 
         #region Private Variables
@@ -93,6 +99,7 @@ namespace UIModules.Managers
             _uiPanelController.CloseAllPanel();
             _uiPanelController.OpenPanel(PanelTypes.LevelPanel);
             _uiPanelController.OpenPanel(PanelTypes.StartPanel);
+            volume.enabled = false;
         }
 
         private void OnReset()
@@ -116,6 +123,7 @@ namespace UIModules.Managers
         {
             _uiPanelController.CloseAllPanel();
             _uiPanelController.OpenPanel(PanelTypes.WinPanel);
+            volume.enabled = true;
         }
 
         private void OnLevelInitialize()
