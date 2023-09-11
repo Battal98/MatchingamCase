@@ -17,6 +17,4 @@ MonoBehaviour:
     LevelIDForText: 0
   GameLevelDatas:
   - LevelCompletedCount: 3
-  - LevelCompletedCount: 3
-  - LevelCompletedCount: 3
-  - LevelCompletedCount: 3
+  - LevelCompletedCount: 2

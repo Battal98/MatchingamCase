@@ -30,8 +30,25 @@ public class InputIslands : MonoBehaviour
     private IslandController _firstSelectedObject;
     private IslandController _secondSelectedObject;
 
+    private bool _isSelectable = true;
+
+    private void OnEnable()
+    {
+        PathSignals.Instance.onSetIsSelectable += OnSetIsSelected;
+    }
+
+    private void OnDisable()
+    {
+        PathSignals.Instance.onSetIsSelectable += OnSetIsSelected;
+    }
+
     private void Update()
     {
+        if (!_isSelectable)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             HandleMouseClick();
@@ -49,7 +66,7 @@ public class InputIslands : MonoBehaviour
         }
         else
         {
-            PathSignals.Instance.onClearPath?.Invoke();
+            ClearSelection();
         }
     }
 
@@ -133,5 +150,10 @@ public class InputIslands : MonoBehaviour
         _secondSelectedObject = null;
 
         _clickedObjectList.Clear();
+    }
+
+    private void OnSetIsSelected(bool isSelected)
+    {
+        _isSelectable = isSelected;
     }
 }

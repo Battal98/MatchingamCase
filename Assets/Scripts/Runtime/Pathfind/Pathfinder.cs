@@ -9,17 +9,6 @@ namespace Runtime.PathfindModule
 {
     public class Pathfinder : MonoBehaviour
     {
-        private GridGraph map;
-
-        private Vector2 _startPosition;
-        private Vector2 _endPosition;
-
-        [Tooltip("y parameters always be 2 or multiplier")]
-        [SerializeField]
-        private Vector2 gridGraphSize;
-
-        private List<Vector3> _positionList = new List<Vector3>();
-
         [SerializeField]
         private LineRenderer lineRenderer;
         [SerializeField]
@@ -27,6 +16,17 @@ namespace Runtime.PathfindModule
 
         [SerializeField]
         private InputIslands inputIslands;
+
+        [Tooltip("y parameters always be 2 or multiplier")]
+        [SerializeField]
+        private Vector2 gridGraphSize;
+
+        private GridGraph _map;
+
+        private Vector2 _startPosition;
+        private Vector2 _endPosition;
+
+        private List<Vector3> _positionList = new List<Vector3>();
 
         private void Start()
         {
@@ -56,12 +56,12 @@ namespace Runtime.PathfindModule
         {
             _positionList.Clear();
 
-            map ??= new GridGraph((int)gridGraphSize.x, (int)gridGraphSize.y);
+            _map ??= new GridGraph((int)gridGraphSize.x, (int)gridGraphSize.y);
 
-            map.Walls ??= new List<Vector2>();
-            map.Forests ??= new List<Vector2>();
+            _map.Walls ??= new List<Vector2>();
+            _map.Forests ??= new List<Vector2>();
 
-            map.Walls.Clear();
+            _map.Walls.Clear();
         }
 
         private void ClearPath()
@@ -81,11 +81,11 @@ namespace Runtime.PathfindModule
             {
                 if (positionhandler.IsIsland && (_startPosition != positionhandler.Position && _endPosition != positionhandler.Position))
                 {
-                    map.Walls.Add(positionhandler.Position);
+                    _map.Walls.Add(positionhandler.Position);
                 }
             }
 
-            var path = AStar.Search(map, map.Grid[(int)_startPosition.x, (int)_startPosition.y], map.Grid[(int)_endPosition.x, (int)_endPosition.y]);
+            var path = AStar.Search(_map, _map.Grid[(int)_startPosition.x, (int)_startPosition.y], _map.Grid[(int)_endPosition.x, (int)_endPosition.y]);
 
 
             if (path is null)

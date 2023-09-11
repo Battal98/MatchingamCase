@@ -134,8 +134,8 @@ namespace UIModules.Managers
 
         public void NextLevelButton()
         {
-            OnLevelInitialize();
             LevelSignals.Instance.onNextLevel?.Invoke();
+            OnLevelInitialize();
         }
 
         public void RestartButton()

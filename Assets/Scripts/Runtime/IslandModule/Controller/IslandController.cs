@@ -68,13 +68,13 @@ namespace Runtime.PathfindModule
             GridSignals.Instance.onSetIslandPathPosition += OnSetPathPosition;
         }
 
-        private void OnSetPathPosition(Vector2 arg0, GameObject obj)
+        private void OnSetPathPosition(Vector2 pathPosition, GameObject sendedObject)
         {
-            if (obj != this.gameObject)
+            if (sendedObject != this.gameObject)
             {
                 return;
             }
-            _pathPosition = arg0;
+            _pathPosition = pathPosition;
         }
 
         private void OnDisable()
@@ -274,6 +274,8 @@ namespace Runtime.PathfindModule
                     pathList[k] += new Vector3(0, +0.2f, 0);
                 }
 
+                PathSignals.Instance.onSetIsSelectable?.Invoke(false);
+
                 for (int i = _movableObjects.Count - 1; i >= 0; i--)
                 {
                     var movableObject = _movableObjects[i];
@@ -300,11 +302,13 @@ namespace Runtime.PathfindModule
                     {
                         movableObject.SetAnimation(HumanAnimation.Idle);
 
-                        movableObject.transform.DORotate(new Vector3(0,90,0), 0.3f, RotateMode.LocalAxisAdd);
+                        //movableObject.transform.DORotate(new Vector3(0,90,0), 0.3f, RotateMode.LocalAxisAdd);
 
                         if (isClearPath)
                         {
                             PathSignals.Instance.onClearPath?.Invoke();
+
+                            PathSignals.Instance.onSetIsSelectable?.Invoke(true);
 
                             if (targetIsland.GetIslandState() == IslandState.Full)
                             {
@@ -314,14 +318,12 @@ namespace Runtime.PathfindModule
 
                     });
 
+                    pathList.Remove(lastPosition);
                     await Task.Delay(TimeSpan.FromSeconds(0.5f));
 
                     RemoveHumanFromSourceIsland(movableObject.gameObject);
 
-                    //targetIsland.SetInitializeIslandState();
                     targetIsland.CalculateIslandFullSlots();
-
-                    //targetIsland.SetSlotsColorType(movableObject.GetColorType());
                 }
 
                 this.SetInitializeIslandState();
@@ -372,10 +374,8 @@ namespace Runtime.PathfindModule
 
         public bool IsTargetIslandFullAndSameColor()
         {
-            // Check if the target island is full
             if (islandState == IslandState.Full)
             {
-                // Check if all color groups are the same
                 if (_fullSlots.Count > 0)
                 {
                     CharacterColor targetColor = _fullSlots[0].GetSlotColorType();
@@ -418,9 +418,9 @@ namespace Runtime.PathfindModule
 
                 GetSlotList()[k].SetCharacterColorInitialize(initializeCharacterDatas[t].ColorType);
 
-                if ((k + 1) % 4 == 0) // Check if we've assigned 4 colors, then move to the next color
+                if ((k + 1) % 4 == 0) 
                 {
-                    t = (t + 1) % GetSlotList().Count; // Use modular arithmetic to cycle through colorList
+                    t = (t + 1) % GetSlotList().Count;
                 }
             }
 

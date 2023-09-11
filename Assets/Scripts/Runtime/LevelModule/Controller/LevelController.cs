@@ -60,7 +60,7 @@ namespace Runtime.LevelModule.Controller
 
         private void OnCreatePositionHandlerObject()
         {
-            int gridSize = leftIslands.Count * rightIslands.Count;
+            int gridSize = (leftIslands.Count + rightIslands.Count) * 2;
 
             for (int i = 0; i < gridSize; i++)
             {
