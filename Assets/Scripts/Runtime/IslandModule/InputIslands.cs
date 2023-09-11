@@ -25,7 +25,6 @@ public class InputIslands : MonoBehaviour
     private Vector2 _endPosition;
 
     private Vector3 _initialPosFirst = Vector3.zero;
-    private Vector3 _initialPosSecond = Vector3.zero;
 
     private IslandController _firstSelectedObject;
     private IslandController _secondSelectedObject;
@@ -96,6 +95,7 @@ public class InputIslands : MonoBehaviour
                 PathSignals.Instance.onClearPath?.Invoke();
 
                 _firstSelectedObject = islandController;
+
                 _firstSelectedObject.IsFirstObject(true);
 
                 _startPosition = _firstSelectedObject.GetPathPosition();
@@ -144,7 +144,6 @@ public class InputIslands : MonoBehaviour
         ResetIslandPositions();
 
         _initialPosFirst = Vector3.zero;
-        _initialPosSecond = Vector3.zero;
 
         _firstSelectedObject = null;
         _secondSelectedObject = null;

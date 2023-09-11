@@ -1,6 +1,4 @@
 ﻿using Extentions;
-using System.Collections;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace Runtime.Pathfind

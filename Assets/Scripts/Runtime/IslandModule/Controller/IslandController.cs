@@ -8,6 +8,7 @@ using Runtime.Pathfind;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.PathfindModule
@@ -20,10 +21,6 @@ namespace Runtime.PathfindModule
 
     public class IslandController : GridManager, IInteractable
     {
-        [BoxGroup(TAG)]
-        [SerializeField]
-        private bool isFirstObject = false;
-
         [BoxGroup(TAG)]
         [SerializeField]
         private IslandState islandState;
@@ -44,7 +41,7 @@ namespace Runtime.PathfindModule
 
         private List<HumanController> _movableObjects = new List<HumanController>();
 
-        private bool _isIslandFull = false;
+        private bool _isFirstObject = false;
         private bool _iHaveACharacter = false;
         private bool _isCompleted = false;
 
@@ -54,9 +51,21 @@ namespace Runtime.PathfindModule
         private int _emptyCount = 0;
         private int _fullCount = 0;
 
+        private Vector2 _pathPosition;
+
         private const string TAG = "SELF";
 
-        private Vector2 _pathPosition;
+        private const float _doPathDuration = 2f;
+        private const float _pathYOffset = 0.2f;
+        private const float _doRotateQuarternionDuration = 0.1f;
+        private const float _doRotateDuration = 0.3f;
+        private const float _durationBetweenMovableObjects = 0.5f;
+        private const float _humanPositionYOffset = 0.2f;
+
+        private const int _setCharacterModValue = 4;
+        private const int _quarter = 4;
+        private const int _half = 4;
+        private const int _quarterHalf = 3;
 
         private void Awake()
         {
@@ -74,6 +83,7 @@ namespace Runtime.PathfindModule
             {
                 return;
             }
+
             _pathPosition = pathPosition;
         }
 
@@ -133,10 +143,13 @@ namespace Runtime.PathfindModule
                 {
                     _emptyCount++;
                 }
+
                 else if (GetSlotList()[i].GetSlotState() == SlotState.Full)
                 {
                     _fullCount++;
+
                     _fullSlots.Add(GetSlotList()[i]);
+
                     _iHaveACharacter = true;
                 }
             }
@@ -151,22 +164,25 @@ namespace Runtime.PathfindModule
                 islandState = IslandState.Empty;
                 _iHaveACharacter = false;
             }
-            else if (fullCount == totalCount / 4)
+
+            else if (fullCount == totalCount / _quarter)
             {
                 islandState = IslandState.Quarter;
             }
-            else if (fullCount == totalCount / 2)
+
+            else if (fullCount == totalCount / _half)
             {
                 islandState = IslandState.Half;
             }
-            else if (fullCount == (totalCount / 4) * 3)
+
+            else if (fullCount == (totalCount / _quarter) * _quarterHalf)
             {
                 islandState = IslandState.QuarterHalf;
             }
+
             else if (fullCount == totalCount)
             {
                 islandState = IslandState.Full;
-                _isIslandFull = true;
             }
         }
 
@@ -201,6 +217,7 @@ namespace Runtime.PathfindModule
             Vector3 vectorHolder = Vector3.zero;
 
             _iHaveACharacter = true;
+
             for (int i = 0; i < GetSlotList().Count; i++)
             {
                 if (GetSlotList()[i].GetSlotState() == SlotState.Empty)
@@ -211,15 +228,13 @@ namespace Runtime.PathfindModule
 
                     _fullSlots.Add(GetSlotList()[i]);
 
-                    Vector3 offset = new Vector3(0, (this.transform.localScale.y / 2f) - 0.2f, 0);
+                    Vector3 offset = new Vector3(0, (this.transform.localScale.y / _half) - _humanPositionYOffset, 0);
 
                     vectorHolder = GetSlotList()[i].gameObject.transform.position + offset;
-
 
                     return vectorHolder;
                 }
             }
-
             return vectorHolder;
         }
 
@@ -254,13 +269,16 @@ namespace Runtime.PathfindModule
                 {
                     _movableObjects.Add(_fullSlots[i].GetActiveObjectController());
                 }
+
                 else
                 {
                     break;
                 }
             }
+
             _movableObjects.Reverse();
         }
+
         public async void ChooseCharactersForMovement(List<Vector3> pathList, IslandController targetIsland)
         {
             int SlotListCount = GetSlotList().Count;
@@ -271,7 +289,7 @@ namespace Runtime.PathfindModule
             {
                 for (int k = 0; k < pathList.Count; k++)
                 {
-                    pathList[k] += new Vector3(0, +0.2f, 0);
+                    pathList[k] += new Vector3(0, _pathYOffset, 0);
                 }
 
                 PathSignals.Instance.onSetIsSelectable?.Invoke(false);
@@ -288,7 +306,7 @@ namespace Runtime.PathfindModule
 
                     bool isClearPath = i == 0;
 
-                    movableObject.transform.DOPath(pathList.ToArray(), 2f, PathType.Linear).OnWaypointChange(index =>
+                    movableObject.transform.DOPath(pathList.ToArray(), _doPathDuration, PathType.Linear).OnWaypointChange(index =>
                     {
                         if (index < pathList.Count - 1)
                         {
@@ -296,13 +314,13 @@ namespace Runtime.PathfindModule
 
                             Quaternion rotation = Quaternion.LookRotation(-direction, Vector3.up);
 
-                            movableObject.transform.DORotateQuaternion(rotation, 0.1f);
+                            movableObject.transform.DORotateQuaternion(rotation, _doRotateQuarternionDuration);
                         }
                     }).OnComplete(() =>
                     {
                         movableObject.SetAnimation(HumanAnimation.Idle);
 
-                        //movableObject.transform.DORotate(new Vector3(0,90,0), 0.3f, RotateMode.LocalAxisAdd);
+                        movableObject.transform.DORotate(new Vector3(0,180,0), _doRotateDuration, RotateMode.LocalAxisAdd);
 
                         if (isClearPath)
                         {
@@ -319,7 +337,8 @@ namespace Runtime.PathfindModule
                     });
 
                     pathList.Remove(lastPosition);
-                    await Task.Delay(TimeSpan.FromSeconds(0.5f));
+
+                    await Task.Delay(TimeSpan.FromSeconds(_durationBetweenMovableObjects));
 
                     RemoveHumanFromSourceIsland(movableObject.gameObject);
 
@@ -346,17 +365,14 @@ namespace Runtime.PathfindModule
 
         private void RemoveHumanFromSourceIsland(GameObject human)
         {
-            // Iterate through the slots in the source island to find the slot containing the human
             foreach (var slot in GetSlotList())
             {
                 if (slot.GetSlotState() == SlotState.Full)
                 {
-                    // Check if the current slot contains the specified human
                     if (slot.GetCharacteObject() == human)
                     {
-                        // Remove the human from the slot
                         slot.SetSlotState(SlotState.Empty);
-                        break; // Exit the loop since we found and removed the human
+                        break; 
                     }
                 }
             }
@@ -364,7 +380,7 @@ namespace Runtime.PathfindModule
 
         public bool IsFirstObject(bool isFirst = false)
         {
-            return isFirstObject;
+            return _isFirstObject;
         }
 
         public IslandController GetIslandController()
@@ -394,7 +410,6 @@ namespace Runtime.PathfindModule
             {
                 return false;
             }
-
             return true;
         }
         public void SetInitializeCharacters()

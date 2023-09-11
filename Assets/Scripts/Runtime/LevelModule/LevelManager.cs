@@ -49,11 +49,9 @@ namespace Runtime.LevelModule
                 LevelSignals.Instance.onLevelInitialize += OnInitializeLevel;
                 LevelSignals.Instance.onClearActiveLevel += OnClearActiveLevel;
 
-                LevelSignals.Instance.onRestartLevel += OnRestartLevel;
                 LevelSignals.Instance.onLevelLoad += OnLoadLevel;
 
                 LevelSignals.Instance.onNextLevel += OnNextLevel;
-                LevelSignals.Instance.onLevelFailed += OnLevelFailed;
 
                 LevelSignals.Instance.onSendToData += OnSenToData;
 
@@ -65,11 +63,9 @@ namespace Runtime.LevelModule
                 LevelSignals.Instance.onLevelInitialize -= OnInitializeLevel;
                 LevelSignals.Instance.onClearActiveLevel -= OnClearActiveLevel;
 
-                LevelSignals.Instance.onLevelFailed -= OnLevelFailed;
                 LevelSignals.Instance.onNextLevel -= OnNextLevel;
 
                 LevelSignals.Instance.onLevelLoad -= OnLoadLevel;
-                LevelSignals.Instance.onRestartLevel -= OnRestartLevel;
 
                 LevelSignals.Instance.onSendToData -= OnSenToData;
 
@@ -114,16 +110,6 @@ namespace Runtime.LevelModule
         private int OnGetLevelIdForText()
         {
             return _levelIDforText;
-        }
-
-        private void OnLevelFailed()
-        {
-           
-        }
-
-        private void OnRestartLevel()
-        {
-            
         }
 
         private void OnNextLevel()

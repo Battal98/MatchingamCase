@@ -1,8 +1,6 @@
-﻿using Astar.PathfinderExample;
-using Runtime.LevelModule.Signals;
+﻿using Runtime.LevelModule.Signals;
 using Runtime.Pathfind;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace Runtime.PathfindModule

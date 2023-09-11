@@ -1,7 +1,6 @@
 ﻿using Runtime.LevelModule.Datas;
 using Runtime.LevelModule.Signals;
 using Runtime.PathfindModule;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +27,8 @@ namespace Runtime.LevelModule.Controller
         private GameLevelData _levelData;
 
         private int completedCount;
+
+        private const float _positionHandlerZOffset = -1.5f;
 
         private void OnEnable()
         {
@@ -79,7 +80,7 @@ namespace Runtime.LevelModule.Controller
                     {
                         _positionHandlerObjects[t].Position = new Vector2(k, i);
                         _positionHandlerObjects[t].gameObject.transform.position = leftIslands[i].transform.position
-                            + new Vector3(0, (leftIslands[i].transform.localScale.y/2f), (k * -1.5f) - (leftIslands[i].transform.localScale.z / 2f));
+                            + new Vector3(0, (leftIslands[i].transform.localScale.y/2f), (k * _positionHandlerZOffset) - (leftIslands[i].transform.localScale.z / 2f));
 
                         PositionHandler(t, leftIslands[i].gameObject);
                     }
@@ -88,7 +89,7 @@ namespace Runtime.LevelModule.Controller
                         var newIndex = Mathf.Abs(i - leftIslands.Count);
                         _positionHandlerObjects[t].Position = new Vector2(k+2, newIndex);
                         _positionHandlerObjects[t].gameObject.transform.position = rightIslands[newIndex].transform.position
-                            + new Vector3(0, (rightIslands[newIndex].transform.localScale.y / 2f), ((k-1) * -1.5f) + (rightIslands[newIndex].transform.localScale.z / 2f));
+                            + new Vector3(0, (rightIslands[newIndex].transform.localScale.y / 2f), ((k-1) * _positionHandlerZOffset) + (rightIslands[newIndex].transform.localScale.z / 2f));
 
                         PositionHandler(t, rightIslands[newIndex].gameObject);
                     }
@@ -104,7 +105,9 @@ namespace Runtime.LevelModule.Controller
             if (_positionHandlerObjects[i].Position.x == 0 || _positionHandlerObjects[i].Position.x == 3)
             {
                 _positionHandlerObjects[i].IsIsland = true;
+
                 pathfinder.AddListPositionHandler(_positionHandlerObjects[i]);
+
                 GridSignals.Instance.onSetIslandPathPosition?.Invoke(_positionHandlerObjects[i].Position, islandObject);
             }
         }
