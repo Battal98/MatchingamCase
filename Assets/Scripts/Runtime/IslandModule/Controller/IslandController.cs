@@ -60,7 +60,7 @@ namespace Runtime.PathfindModule
         private const float _doRotateQuarternionDuration = 0.1f;
         private const float _doRotateDuration = 0.3f;
         private const float _durationBetweenMovableObjects = 0.5f;
-        private const float _humanPositionYOffset = 0.2f;
+        private const float _humanPositionYOffset = 0.075f;
 
         private const int _setCharacterModValue = 4;
         private const int _quarter = 4;
@@ -228,7 +228,7 @@ namespace Runtime.PathfindModule
 
                     _fullSlots.Add(GetSlotList()[i]);
 
-                    Vector3 offset = new Vector3(0, (this.transform.localScale.y / _half) - _humanPositionYOffset, 0);
+                    Vector3 offset = new Vector3(0, (this.transform.localScale.y / _half) + _humanPositionYOffset, 0);
 
                     vectorHolder = GetSlotList()[i].gameObject.transform.position + offset;
 
@@ -319,8 +319,8 @@ namespace Runtime.PathfindModule
                     }).OnComplete(() =>
                     {
                         movableObject.SetAnimation(HumanAnimation.Idle);
-
-                        movableObject.transform.DORotate(new Vector3(0,180,0), _doRotateDuration, RotateMode.LocalAxisAdd);
+                        pathList.Remove(lastPosition);
+                        movableObject.transform.DORotate(new Vector3(0, 90, 0), _doRotateDuration,RotateMode.LocalAxisAdd);
 
                         if (isClearPath)
                         {
@@ -335,8 +335,6 @@ namespace Runtime.PathfindModule
                         }
 
                     });
-
-                    pathList.Remove(lastPosition);
 
                     await Task.Delay(TimeSpan.FromSeconds(_durationBetweenMovableObjects));
 
