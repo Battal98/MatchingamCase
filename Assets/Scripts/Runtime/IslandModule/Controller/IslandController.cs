@@ -38,11 +38,11 @@ namespace Runtime.PathfindModule
 
         [BoxGroup(TAG)]
         [SerializeField]
-        private List<Slot> fullSlots = new List<Slot>();
+        private ParticleSystem conffetParticle;
 
-        [BoxGroup(TAG)]
-        [SerializeField]
-        private List<HumanController> movableObjects = new List<HumanController>();
+        private List<Slot> _fullSlots = new List<Slot>();
+
+        private List<HumanController> _movableObjects = new List<HumanController>();
 
         private bool _isIslandFull = false;
         private bool _iHaveACharacter = false;
@@ -50,6 +50,9 @@ namespace Runtime.PathfindModule
 
         private int _maxGridSize;
         private int _emptySlotCount;
+
+        private int _emptyCount = 0;
+        private int _fullCount = 0;
 
         private const string TAG = "SELF";
 
@@ -89,6 +92,18 @@ namespace Runtime.PathfindModule
             return _iHaveACharacter;
         }
 
+        public void PlayConfettiParticle()
+        {
+            if (!_isCompleted)
+            {
+                return;
+            }
+
+            conffetParticle.Play();
+
+            LevelSignals.Instance.onCalculateCopmletedCount?.Invoke();
+        }
+
         private void OnSetCharactersAndIsland()
         {
             SetInitializeCharacters();
@@ -98,25 +113,37 @@ namespace Runtime.PathfindModule
 
         public void SetInitializeIslandState()
         {
-            int emptyCount = 0;
-            int fullCount = 0;
+            CalculateFullSlot();
 
-            fullSlots.Clear();
+            CalculateIslandState(_emptyCount, _fullCount);
+
+            CalculateMovableObjects();
+        }
+
+        private void CalculateFullSlot()
+        {
+            _emptyCount = 0;
+            _fullCount = 0;
+
+            _fullSlots.Clear();
 
             for (int i = 0; i < GetSlotList().Count; i++)
             {
                 if (GetSlotList()[i].GetSlotState() == SlotState.Empty)
                 {
-                    emptyCount++;
+                    _emptyCount++;
                 }
                 else if (GetSlotList()[i].GetSlotState() == SlotState.Full)
                 {
-                    fullCount++;
-                    fullSlots.Add(GetSlotList()[i]);
+                    _fullCount++;
+                    _fullSlots.Add(GetSlotList()[i]);
                     _iHaveACharacter = true;
                 }
             }
+        }
 
+        private void CalculateIslandState(int emptyCount, int fullCount)
+        {
             int totalCount = GetSlotList().Count;
 
             if (emptyCount == totalCount)
@@ -141,8 +168,18 @@ namespace Runtime.PathfindModule
                 islandState = IslandState.Full;
                 _isIslandFull = true;
             }
+        }
 
-            CalculateMovableObjects();
+        public void CalculateIslandFullSlots()
+        {
+            CalculateFullSlot();
+
+            CalculateIslandState(_emptyCount, _fullCount);
+
+            if (IsTargetIslandFullAndSameColor())
+            {
+                IsCompletedIsland(true);
+            }
         }
 
         public int GetEmptySlotCount()
@@ -159,20 +196,25 @@ namespace Runtime.PathfindModule
             return _emptySlotCount;
         }
 
-        public Vector3 GetEmptySlotPosition(GameObject childObject)
+        public Vector3 GetEmptySlotPosition(HumanController childObjectController)
         {
             Vector3 vectorHolder = Vector3.zero;
 
+            _iHaveACharacter = true;
             for (int i = 0; i < GetSlotList().Count; i++)
             {
                 if (GetSlotList()[i].GetSlotState() == SlotState.Empty)
                 {
-                    GetSlotList()[i].SetParentForHuman(childObject);
+                    GetSlotList()[i].SetParentForHuman(childObjectController.gameObject);
                     GetSlotList()[i].SetSlotState(SlotState.Full);
+                    GetSlotList()[i].SetSlotColor(childObjectController.GetColorType());
+
+                    _fullSlots.Add(GetSlotList()[i]);
 
                     Vector3 offset = new Vector3(0, (this.transform.localScale.y / 2f) - 0.2f, 0);
 
                     vectorHolder = GetSlotList()[i].gameObject.transform.position + offset;
+
 
                     return vectorHolder;
                 }
@@ -188,11 +230,11 @@ namespace Runtime.PathfindModule
 
         public bool HasSameColorGroup(List<HumanController> movingHumans)
         {
-            if (fullSlots.Count != 0)
+            if (_fullSlots.Count != 0)
             {
                 foreach (var human in movingHumans)
                 {
-                    if (human.GetColorType() != fullSlots[fullSlots.Count - 1].GetSlotColorType())
+                    if (human.GetColorType() != _fullSlots[_fullSlots.Count - 1].GetSlotColorType())
                     {
                         return false;
                     }
@@ -204,20 +246,20 @@ namespace Runtime.PathfindModule
 
         private void CalculateMovableObjects()
         {
-            movableObjects.Clear();
+            _movableObjects.Clear();
 
-            for (int i = fullSlots.Count - 1; i >= 0; i--)
+            for (int i = _fullSlots.Count - 1; i >= 0; i--)
             {
-                if (fullSlots[i].GetSlotColorType() == fullSlots[fullSlots.Count - 1].GetSlotColorType())
+                if (_fullSlots[i].GetSlotColorType() == _fullSlots[_fullSlots.Count - 1].GetSlotColorType())
                 {
-                    movableObjects.Add(fullSlots[i].GetActiveObjectController());
+                    _movableObjects.Add(_fullSlots[i].GetActiveObjectController());
                 }
                 else
                 {
                     break;
                 }
             }
-            movableObjects.Reverse();
+            _movableObjects.Reverse();
         }
         public async void ChooseCharactersForMovement(List<Vector3> pathList, IslandController targetIsland)
         {
@@ -225,18 +267,18 @@ namespace Runtime.PathfindModule
 
             CalculateMovableObjects();
 
-            if (targetIsland.HasEnoughEmptySlots(movableObjects.Count) && targetIsland.HasSameColorGroup(movableObjects) && !_isCompleted)
+            if (targetIsland.HasEnoughEmptySlots(_movableObjects.Count) && targetIsland.HasSameColorGroup(_movableObjects) && !_isCompleted)
             {
                 for (int k = 0; k < pathList.Count; k++)
                 {
                     pathList[k] += new Vector3(0, +0.2f, 0);
                 }
 
-                for (int i = movableObjects.Count - 1; i >= 0; i--)
+                for (int i = _movableObjects.Count - 1; i >= 0; i--)
                 {
-                    var movableObject = movableObjects[i]; 
+                    var movableObject = _movableObjects[i];
 
-                    var lastPosition = targetIsland.GetEmptySlotPosition(movableObject.gameObject);
+                    var lastPosition = targetIsland.GetEmptySlotPosition(movableObject);
 
                     pathList.Add(lastPosition);
 
@@ -244,7 +286,7 @@ namespace Runtime.PathfindModule
 
                     bool isClearPath = i == 0;
 
-                    movableObject.transform.DOPath(pathList.ToArray(), 3f, PathType.Linear).OnWaypointChange(index =>
+                    movableObject.transform.DOPath(pathList.ToArray(), 2f, PathType.Linear).OnWaypointChange(index =>
                     {
                         if (index < pathList.Count - 1)
                         {
@@ -263,16 +305,23 @@ namespace Runtime.PathfindModule
                         if (isClearPath)
                         {
                             PathSignals.Instance.onClearPath?.Invoke();
+
+                            if (targetIsland.GetIslandState() == IslandState.Full)
+                            {
+                                targetIsland.PlayConfettiParticle();
+                            }
                         }
+
                     });
 
                     await Task.Delay(TimeSpan.FromSeconds(0.5f));
 
                     RemoveHumanFromSourceIsland(movableObject.gameObject);
 
-                    targetIsland.SetInitializeIslandState();
+                    //targetIsland.SetInitializeIslandState();
+                    targetIsland.CalculateIslandFullSlots();
 
-                    targetIsland.SetSlotsColorType(movableObject.GetColorType());
+                    //targetIsland.SetSlotsColorType(movableObject.GetColorType());
                 }
 
                 this.SetInitializeIslandState();
@@ -283,24 +332,14 @@ namespace Runtime.PathfindModule
             }
         }
 
+        public IslandState GetIslandState()
+        {
+            return islandState;
+        }
+
         public void IsCompletedIsland(bool state)
         {
             _isCompleted = state;
-        }
-
-        public void SetSlotsColorType(CharacterColor colorType)
-        {
-            for (int i = 0; i < fullSlots.Count; i++)
-            {
-                fullSlots[i].SetSlotColor(colorType);
-            }
-
-            if (IsTargetIslandFullAndSameColor())
-            {
-                IsCompletedIsland(true);
-
-                LevelSignals.Instance.onCalculateCopmletedCount?.Invoke();
-            }
         }
 
         private void RemoveHumanFromSourceIsland(GameObject human)
@@ -337,10 +376,11 @@ namespace Runtime.PathfindModule
             if (islandState == IslandState.Full)
             {
                 // Check if all color groups are the same
-                if (fullSlots.Count > 0)
+                if (_fullSlots.Count > 0)
                 {
-                    CharacterColor targetColor = fullSlots[0].GetSlotColorType();
-                    foreach (var slot in fullSlots)
+                    CharacterColor targetColor = _fullSlots[0].GetSlotColorType();
+
+                    foreach (var slot in _fullSlots)
                     {
                         if (slot.GetSlotColorType() != targetColor)
                         {
